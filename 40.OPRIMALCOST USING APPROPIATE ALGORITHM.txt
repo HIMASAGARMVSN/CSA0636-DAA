@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+// Function to find the minimum of two numbers
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+// Function to find the optimal cost using a greedy algorithm
+int findOptimalCost(int costs[], int n) {
+    int minCost = costs[0];
+
+    for (int i = 1; i < n; i++) {
+        minCost = min(minCost, costs[i]);
+    }
+
+    return minCost;
+}
+
+int main() {
+    int n;  // Number of costs
+    printf("Enter the number of costs: ");
+    scanf("%d", &n);
+
+    int costs[n];  // Array to store costs
+
+    // Input costs from the user
+    printf("Enter the costs:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Cost %d: ", i + 1);
+        scanf("%d", &costs[i]);
+    }
+
+    int optimalCost = findOptimalCost(costs, n);
+
+    printf("The optimal cost is: %d\n", optimalCost);
+
+    return 0;
+}

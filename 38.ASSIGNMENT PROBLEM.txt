@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_SIZE 10 // Maximum size for the cost matrix
+
+int N; // Number of tasks (rows) and resources (columns)
+int costMatrix[MAX_SIZE][MAX_SIZE];
+int assigned[MAX_SIZE] = {0}; // Array to keep track of assigned resources
+int minCost = INT_MAX;
+
+void printAssignment() {
+    printf("Optimal Assignment: ");
+    for (int i = 0; i < N; i++) {
+        printf("(%d, %d) ", i + 1, assigned[i] + 1); // Adding 1 for 1-based indexing
+    }
+    printf("\n");
+}
+
+int calculateCost() {
+    int totalCost = 0;
+    for (int i = 0; i < N; i++) {
+        totalCost += costMatrix[i][assigned[i]];
+    }
+    return totalCost;
+}
+
+void branchAndBound(int row, int totalCost) {
+    if (row == N) {
+        if (totalCost < minCost) {
+            minCost = totalCost;
+            printAssignment();
+        }
+        return;
+    }
+
+    for (int col = 0; col < N; col++) {
+        if (!assigned[col]) {
+            assigned[col] = 1; // Mark column as assigned
+            branchAndBound(row + 1, totalCost + costMatrix[row][col]);
+            assigned[col] = 0; // Unmark column (backtrack)
+        }
+    }
+}
+
+int main() {
+    printf("Enter the number of tasks/resources (N <= %d): ", MAX_SIZE);
+    scanf("%d", &N);
+
+    if (N <= 0 || N > MAX_SIZE) {
+        printf("Invalid input for N. Exiting...\n");
+        return 1;
+    }
+
+    printf("Enter the cost matrix (%d x %d):\n", N, N);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            scanf("%d", &costMatrix[i][j]);
+        }
+    }
+
+    branchAndBound(0, 0);
+
+    printf("Minimum Cost: %d\n", minCost);
+
+    return 0;
+}
